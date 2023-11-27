@@ -3,6 +3,7 @@ import { Button, Text, View } from "react-native";
 import Spacer from "../components/Spacer";
 
 export default function StartScreen({ navigation }) {
+
     return (
         <View >
         <TopTile />
