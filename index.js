@@ -2,32 +2,39 @@
  * @format
  */
 
-import { AppRegistry, LogBox } from 'react-native';
+import {AppRegistry} from 'react-native';
 import App from './App';
-import { name as appName } from './app.json';
+import {name as appName} from './app.json';
 
-import { Database } from '@nozbe/watermelondb';
-import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
-import { blogSchema } from './src/model/schema';
-import { Post } from './src/model/Post.model.js';
-import { Comment } from './src/model/Comment.model';
-import { Blog } from './src/model/Blog.model';
+import { Database } from '@nozbe/watermelondb'
+import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite'
 
-// The example passes WatermelonDB objects as navigation params, these objects contain functions which triggers this warning.
-// See more: https://reactnavigation.org/docs/troubleshooting/#i-get-the-warning-non-serializable-values-were-found-in-the-navigation-state
-LogBox.ignoreLogs(['Non-serializable values were found in the navigation state']);
+import schema from './model/schema'
+import migrations from './model/migrations'
 
 const adapter = new SQLiteAdapter({
-  schema: blogSchema,
-  dbName: 'ExpenseDB', // optional database name or file system path
-  // migrations, // optional migrations
-  experimentalUseJSI: false,
-});
+  schema,
+  // (You might want to comment it out for development purposes -- see Migrations documentation)
+  migrations,
+  dbName: 'expensesage',
+  // (recommended option, should work flawlessly out of the box on iOS. On Android,
+  // additional installation steps have to be taken - disable if you run into issues...)
+  jsi: true, /* Platform.OS === 'ios' */
+  // (optional, but you should implement this method)
+  onSetUpError: error => {
+    // Database failed to load -- offer the user to reload the app or log out
+    
+     
+  }
+})
 
-export const database = new Database({
+// Then, make a Watermelon database from it!
+const database = new Database({
   adapter,
-  modelClasses: [Post, Comment, Blog],
+  modelClasses: [
+    // Post, // ⬅️ You'll add Models to Watermelon here
+  ],
   actionsEnabled: true,
-});
+})
 
 AppRegistry.registerComponent(appName, () => App);
